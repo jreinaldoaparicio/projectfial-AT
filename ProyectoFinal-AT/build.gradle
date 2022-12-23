@@ -21,6 +21,7 @@ dependencies {
     implementation 'com.netflix.nebula:gradle-override-plugin:4.0.0'
     implementation 'ee.ringit.extras.camunda:timer-override-plugin:1.0.1'
     implementation 'com.thoughtworks.feature:override_sjs0.6_2.11:1.1.0'
+    implementation 'org.springframework.boot:spring-boot-starter-test:3.0.0'
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation(platform('io.cucumber:cucumber-bom:7.10.1'))
 
