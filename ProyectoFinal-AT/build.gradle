@@ -1,0 +1,55 @@
+plugins {
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://repo.clojars.org'
+        name 'Clojars'
+    }
+}
+project.ext {
+    cucumberVersion = '5.6.0'
+}
+dependencies {
+
+    implementation 'system:system:0.1.0'
+    implementation 'com.netflix.nebula:gradle-override-plugin:4.0.0'
+    implementation 'ee.ringit.extras.camunda:timer-override-plugin:1.0.1'
+    implementation 'com.thoughtworks.feature:override_sjs0.6_2.11:1.1.0'
+    testImplementation(platform("org.junit:junit-bom:5.9.1"))
+    testImplementation(platform('io.cucumber:cucumber-bom:7.10.1'))
+
+    testImplementation("io.cucumber:cucumber-java")
+    testImplementation('io.cucumber:cucumber-junit-platform-engine:7.10.1')
+    testImplementation("org.junit.platform:junit-platform-suite")
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.7.1'
+}
+configurations {
+    cucumberRuntime {
+        extendsFrom testImplementation
+    }
+}
+
+test {
+    useJUnitPlatform()
+    systemProperty("cucumber.junit-platform.naming-strategy", "long")
+    systemProperty("cucumber.plugin", "message:build/reports/cucumber.json, timeline:build/reports/timeline, html:build/reports/cucumber.html")
+}
+
+
+task cucumber(type: JavaExec) {
+    dependsOn assemble, compileTestJava
+    systemProperty('envcu', System.properties['envcu'] ?: 'dev')
+    main = "io.cucumber.core.cli.Main"
+    classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+    args = ['--plugin', 'pretty','--plugin','html:target/cucumber-report.html','--plugin', 'json:cucumber/report.json','--glue', 'testSuite/ticktick', 'src/test/resources/features']
+}
+
+
+
